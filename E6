@@ -1,0 +1,23 @@
+% Hechos que representan las conexiones y precios
+tramo(medellin,cartagena,avion,200000).
+tramo(cartagena,bogota,bus,40000).
+tramo(bogota,cali,bus,130000).
+tramo(cali,popayan,bus,20000).
+tramo(cali,puerto_asis,bus,90000).
+tramo(puerto_asis,mitu,bus,150000).
+tramo(bogota,bucaramanga,bus,58000).
+tramo(bucaramanga,neiva,avion,210000).
+tramo(neiva,cali,bus,81000).
+
+% Regla para enrutar un viaje
+enrutar(Origen, Destino, Recorrido, PreciosPorTrayecto, PrecioTotal, TiposTransporte) :-
+    conectar(Origen, Destino, Recorrido, PreciosPorTrayecto, TiposTransporte, PrecioTotal).
+
+% Caso base: si el origen es igual al destino, hemos llegado.
+conectar(Destino, Destino, [Destino], [], [], 0).
+
+% Caso recursivo: buscamos una conexión desde el origen.
+conectar(Origen, Destino, [Origen|Recorrido], [Precio|PreciosRestantes], [Transporte|TransportesRestantes], PrecioTotal) :-
+    tramo(Origen, SiguienteCiudad, Transporte, Precio),
+    conectar(SiguienteCiudad, Destino, Recorrido, PreciosRestantes, TransportesRestantes, PrecioTotalRestante),
+    PrecioTotal is Precio + PrecioTotalRestante.
